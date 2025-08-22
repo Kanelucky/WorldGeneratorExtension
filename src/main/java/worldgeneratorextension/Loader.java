@@ -1,5 +1,6 @@
 package worldgeneratorextension;
 
+import cn.nukkit.GameVersion;
 import cn.nukkit.Server;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
@@ -157,16 +158,7 @@ public class Loader extends PluginBase implements Listener {
     }
 
     public static RuntimeItemMapping getRuntimeItemMapptings() {
-        if ("Nukkit PetteriM1 Edition".equals(Server.getInstance().getName())) {
-            return RuntimeItems.getMapping(419);
-        }
-
-        try {
-            //noinspection JavaReflectionMemberAccess
-            return (RuntimeItemMapping) Class.forName("cn.nukkit.item.RuntimeItems").getMethod("getMapping").invoke(null);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to get RuntimeItemMapping", e);
-        }
+        return RuntimeItems.getMapping(GameVersion.V1_16_100);
     }
 
     public static float getEndIslandHeight(int chunkX, int chunkZ, SimplexNoise islandNoise) {

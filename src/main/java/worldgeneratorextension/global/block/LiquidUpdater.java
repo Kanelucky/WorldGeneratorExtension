@@ -14,8 +14,8 @@ public final class LiquidUpdater {
     private static void lavaSpread(ChunkManager level, int x, int y, int z, int counter) {
         if (counter > 100) {
             FullChunk chunk;
-            if (level instanceof Level && (chunk = level.getChunk(x >> 4, z >> 4)) != null) {
-                Block block = Block.get(((Level) level).getFullBlock(chunk, x, y, z), (Level) level, x, y, z);
+            if (level instanceof Level && level.getChunk(x >> 4, z >> 4) != null) {
+                Block block = Block.get(((Level) level).getFullBlock(x, y, z), (Level) level, x, y, z);
                 ((Level) level).scheduleUpdate(block, block, 10, 0, false);
             }
             return;

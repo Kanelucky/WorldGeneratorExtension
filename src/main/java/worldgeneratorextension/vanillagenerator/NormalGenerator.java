@@ -199,6 +199,11 @@ public class NormalGenerator extends Generator {
     }
 
     @Override
+    public void populateStructure(int i, int i1) {
+
+    }
+
+    @Override
     public void generateChunk(int chunkX, int chunkZ) {
         this.nukkitRandom.setSeed(chunkX * localSeed1 ^ chunkZ * localSeed2 ^ this.level.getSeed());
 

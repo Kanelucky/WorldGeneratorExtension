@@ -101,7 +101,7 @@ public class PopulatorCoralCrust extends Populator {
 
             if (y >= 40 && y < Normal.seaHeight && Block.isWater(chunk.getBlockId(x, y, z))) {
                 chunk.setBlock(x, y, z, id, random.nextBoundedInt(type));
-                chunk.setBlockAtLayer(x, y, z, BlockLayer.WATERLOGGED, BlockID.WATER);
+                chunk.setBlockAtLayer(x, y, z, BlockLayer.WATERLOGGED.ordinal(), BlockID.WATER);
             }
         }
     }
