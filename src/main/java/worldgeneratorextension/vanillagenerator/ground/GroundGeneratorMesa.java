@@ -77,43 +77,39 @@ public class GroundGeneratorMesa extends GroundGenerator {
             if (y < (int) bryceCanyonHeight && chunkData.getBlockId(x, y, z) == AIR) {
                 chunkData.setBlock(x, y, z, STONE);
             }
-            if (y <= random.nextBoundedInt(5)) {
-                chunkData.setBlock(x, y, z, BEDROCK);
-            } else {
-                int mat = chunkData.getBlockId(x, y, z);
-                if (mat == AIR) {
-                    deep = -1;
-                } else if (mat == STONE) { // revert 9747d77 -- hennick
-                    if (deep == -1) {
-                        groundSet = false;
-                        //if (y >= SEA_LEVEL - 5 && y <= SEA_LEVEL) {
-                        //    groundMat = this.groundMaterial;
-                        //}
+            int mat = chunkData.getBlockId(x, y, z);
+            if (mat == AIR) {
+                deep = -1;
+            } else if (mat == STONE) { // revert 9747d77 -- hennick
+                if (deep == -1) {
+                    groundSet = false;
+                    //if (y >= SEA_LEVEL - 5 && y <= SEA_LEVEL) {
+                    //    groundMat = this.groundMaterial;
+                    //}
 
-                        deep = surfaceHeight + Math.max(0, y - SEA_LEVEL - 1);
-                        if (y >= SEA_LEVEL - 2) {
-                            if (type == MesaType.FOREST && y > SEA_LEVEL + 22 + (surfaceHeight << 1)) {
-                                int topMat = colored ? GRASS : DIRT;
-                                int topData = colored ? 0 : 1;
-                                chunkData.setBlock(x, y, z, topMat, topData);
-                            } else if (y > SEA_LEVEL + 2 + surfaceHeight) {
-                                int color = this.colorLayer[(y + (int) Math.round(this.colorNoise.noise(chunkX, chunkZ, 0.5D, 2.0D) * 2.0D)) % this.colorLayer.length];
-                                this.setColoredGroundLayer(chunkData, x, y, z, y < SEA_LEVEL || y > 128 ? 1 : colored ? color : -1);
-                            } else {
-                                chunkData.setBlock(x, y, z, SAND, 1);
-                                groundSet = true;
-                            }
-                        } else {
-                            chunkData.setBlock(x, y, z, STAINED_HARDENED_CLAY, 1);
-                        }
-                    } else if (deep > 0) {
-                        deep--;
-                        if (groundSet) {
-                            chunkData.setBlock(x, y, z, STAINED_HARDENED_CLAY, 1);
-                        } else {
+                    deep = surfaceHeight + Math.max(0, y - SEA_LEVEL - 1);
+                    if (y >= SEA_LEVEL - 2) {
+                        if (type == MesaType.FOREST && y > SEA_LEVEL + 22 + (surfaceHeight << 1)) {
+                            int topMat = colored ? GRASS : DIRT;
+                            int topData = colored ? 0 : 1;
+                            chunkData.setBlock(x, y, z, topMat, topData);
+                        } else if (y > SEA_LEVEL + 2 + surfaceHeight) {
                             int color = this.colorLayer[(y + (int) Math.round(this.colorNoise.noise(chunkX, chunkZ, 0.5D, 2.0D) * 2.0D)) % this.colorLayer.length];
-                            this.setColoredGroundLayer(chunkData, x, y, z, color);
+                            this.setColoredGroundLayer(chunkData, x, y, z, y < SEA_LEVEL || y > 128 ? 1 : colored ? color : -1);
+                        } else {
+                            chunkData.setBlock(x, y, z, SAND, 1);
+                            groundSet = true;
                         }
+                    } else {
+                        chunkData.setBlock(x, y, z, STAINED_HARDENED_CLAY, 1);
+                    }
+                } else if (deep > 0) {
+                    deep--;
+                    if (groundSet) {
+                        chunkData.setBlock(x, y, z, STAINED_HARDENED_CLAY, 1);
+                    } else {
+                        int color = this.colorLayer[(y + (int) Math.round(this.colorNoise.noise(chunkX, chunkZ, 0.5D, 2.0D) * 2.0D)) % this.colorLayer.length];
+                        this.setColoredGroundLayer(chunkData, x, y, z, color);
                     }
                 }
             }

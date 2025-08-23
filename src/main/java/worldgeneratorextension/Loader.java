@@ -1,7 +1,6 @@
 package worldgeneratorextension;
 
 import cn.nukkit.GameVersion;
-import cn.nukkit.Server;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.level.ChunkPopulateEvent;

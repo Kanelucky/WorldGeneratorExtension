@@ -8,8 +8,8 @@ import cn.nukkit.level.biome.Biome;
 import cn.nukkit.level.biome.EnumBiome;
 import cn.nukkit.level.format.generic.BaseFullChunk;
 import cn.nukkit.level.generator.Generator;
-import cn.nukkit.level.generator.populator.impl.PopulatorSpring;
-import cn.nukkit.level.generator.populator.impl.WaterIcePopulator;
+import cn.nukkit.level.generator.Normal;
+import cn.nukkit.level.generator.populator.impl.*;
 import cn.nukkit.level.generator.populator.type.Populator;
 import cn.nukkit.math.NukkitRandom;
 import cn.nukkit.math.Vector3;
@@ -20,12 +20,12 @@ import worldgeneratorextension.vanillagenerator.noise.SimplexOctaveGenerator;
 import worldgeneratorextension.vanillagenerator.noise.bukkit.OctaveGenerator;
 import worldgeneratorextension.vanillagenerator.object.OreType;
 import worldgeneratorextension.vanillagenerator.populator.PopulatorOre;
-import worldgeneratorextension.vanillagenerator.populator.overworld.PopulatorCaves;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import worldgeneratorextension.vanillagenerator.populator.overworld.PopulatorCaves;
 import worldgeneratorextension.vanillagenerator.populator.overworld.PopulatorSnowLayers;
 
 import java.util.Collections;
@@ -48,6 +48,8 @@ public class NormalGenerator extends Generator {
     private static final double[][] ELEVATION_WEIGHT = new double[5][5];
     private static final Int2ObjectMap<GroundGenerator> GROUND_MAP = new Int2ObjectOpenHashMap<>();
     private static final Int2ObjectMap<BiomeHeight> HEIGHT_MAP = new Int2ObjectOpenHashMap<>();
+
+    private List<Populator> generationPopulators = ImmutableList.of();
 
     private static final double coordinateScale = 684.412d;
     private static final double heightScale = 684.412d;
@@ -130,7 +132,6 @@ public class NormalGenerator extends Generator {
         }
     }
 
-    private List<Populator> generationPopulators = Lists.newArrayList();
     private List<Populator> populators = Lists.newArrayList();
     private ChunkManager level;
     private NukkitRandom nukkitRandom;
@@ -174,7 +175,9 @@ public class NormalGenerator extends Generator {
         this.localSeed2 = ThreadLocalRandom.current().nextLong();
         this.nukkitRandom.setSeed(this.level.getSeed());
 
-        this.generationPopulators = ImmutableList.of(new PopulatorCaves());
+        this.generationPopulators = ImmutableList.of(
+                new PopulatorDeepslate(Normal.BEDROCK_LAYER),
+                new PopulatorGroundCover());
 
         this.populators = ImmutableList.of(
                 new PopulatorOre(STONE, new OreType[]{
@@ -190,6 +193,17 @@ public class NormalGenerator extends Generator {
                         new OreType(Block.get(STONE, BlockStone.DIORITE), 10, 33, 0, 80),
                         new OreType(Block.get(STONE, BlockStone.ANDESITE), 10, 33, 0, 80)
                 }),
+                new PopulatorOre(BlockID.DEEPSLATE, new OreType[]{
+                        new OreType(Block.get(BlockID.DEEPSLATE_COAL_ORE), 1, 13, -4, 8, BlockID.DEEPSLATE),
+                        new OreType(Block.get(BlockID.DEEPSLATE_COPPER_ORE), 5, 9, -64, 8, BlockID.DEEPSLATE),
+                        new OreType(Block.get(BlockID.DEEPSLATE_IRON_ORE), 5, 9, -64, 8, BlockID.DEEPSLATE),
+                        new OreType(Block.get(BlockID.DEEPSLATE_REDSTONE_ORE), 8, 8, -64, 8, BlockID.DEEPSLATE),
+                        new OreType(Block.get(BlockID.DEEPSLATE_LAPIS_ORE), 6, 6, -64, 8, BlockID.DEEPSLATE),
+                        new OreType(Block.get(BlockID.DEEPSLATE_GOLD_ORE), 2, 9, -64, 8, BlockID.DEEPSLATE),
+                        new OreType(Block.get(BlockID.DEEPSLATE_DIAMOND_ORE), 4, 5, -64, 8, BlockID.DEEPSLATE)
+                }),
+                new PopulatorCaves(Normal.BEDROCK_LAYER),
+                new PopulatorBedrock(Normal.BEDROCK_LAYER),
                 new PopulatorSnowLayers(),
                 new WaterIcePopulator(),
                 new PopulatorSpring(BlockID.WATER, BlockID.STONE, 15, 8, 255),

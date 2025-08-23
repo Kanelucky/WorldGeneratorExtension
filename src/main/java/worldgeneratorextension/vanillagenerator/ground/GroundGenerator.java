@@ -41,42 +41,38 @@ public class GroundGenerator implements BlockID {
 
         int surfaceHeight = Math.max((int) (surfaceNoise / 3.0D + 3.0D + random.nextDouble() * 0.25D), 1);
         int deep = -1;
-        for (int y = 255; y >= 0; y--) {
-            if (y <= random.nextBoundedInt(5)) {
-                chunkData.setBlock(x, y, z, BEDROCK);
-            } else {
-                int mat = chunkData.getBlockId(x, y, z);
-                if (mat == AIR) {
-                    deep = -1;
-                } else if (mat == STONE) {
-                    if (deep == -1) {
-                        if (y >= seaLevel - 5 && y <= seaLevel) {
-                            topMat = this.topMaterial;
-                            groundMat = this.groundMaterial;
-                        }
-
-                        deep = surfaceHeight;
-                        if (y >= seaLevel - 2) {
-                            chunkData.setBlock(x, y, z, topMat, this.topData);
-                        } else if (y < seaLevel - 8 - surfaceHeight) {
-                            topMat = AIR;
-                            groundMat = STONE;
-                            chunkData.setBlock(x, y, z, GRAVEL);
-                        } else {
-                            chunkData.setBlock(x, y, z, groundMat, this.groundData);
-                        }
-                    } else if (deep > 0) {
-                        deep--;
-                        chunkData.setBlock(x, y, z, groundMat, this.groundData);
-
-                        if (deep == 0 && groundMat == SAND) {
-                            deep = random.nextBoundedInt(4) + Math.max(0, y - seaLevel - 1);
-                            groundMat = SANDSTONE;
-                        }
+        for (int y = world.getMaxBlockY(); y >= 0; y--) {
+            int mat = chunkData.getBlockId(x, y, z);
+            if (mat == AIR) {
+                deep = -1;
+            } else if (mat == STONE) {
+                if (deep == -1) {
+                    if (y >= seaLevel - 5 && y <= seaLevel) {
+                        topMat = this.topMaterial;
+                        groundMat = this.groundMaterial;
                     }
-                } else if (mat == Block.STILL_WATER && y == seaLevel - 2 && BiomeClimate.isCold(biome, chunkX, y, chunkZ)) {
-                    chunkData.setBlock(x, y, z, ICE);
+
+                    deep = surfaceHeight;
+                    if (y >= seaLevel - 2) {
+                        chunkData.setBlock(x, y, z, topMat, this.topData);
+                    } else if (y < seaLevel - 8 - surfaceHeight) {
+                        topMat = AIR;
+                        groundMat = STONE;
+                        chunkData.setBlock(x, y, z, GRAVEL);
+                    } else {
+                        chunkData.setBlock(x, y, z, groundMat, this.groundData);
+                    }
+                } else if (deep > 0) {
+                    deep--;
+                    chunkData.setBlock(x, y, z, groundMat, this.groundData);
+
+                    if (deep == 0 && groundMat == SAND) {
+                        deep = random.nextBoundedInt(4) + Math.max(0, y - seaLevel - 1);
+                        groundMat = SANDSTONE;
+                    }
                 }
+            } else if (mat == Block.STILL_WATER && y == seaLevel - 2 && BiomeClimate.isCold(biome, chunkX, y, chunkZ)) {
+                chunkData.setBlock(x, y, z, ICE);
             }
         }
     }
